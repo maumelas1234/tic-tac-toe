@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <h1>Tic Tac Toe</h1>
-    <form id="form">
-        <input type="text" id="player1" placeholder="Player 1 Name" required>
-        <input type="text" id="player2" placeholder="Player 2 Name" required>
-        <button type="submit">Start Game</button>
-    </form>
+    <div id="mode-selection">
+        <button id="single-player">Single Player</button>
+        <button id="two-player">Two Players</button>
+    </div>
     <div class="board" id="board">
         <div class="cell" data-index="0"></div>
         <div class="cell" data-index="1"></div>
@@ -25,6 +26,17 @@
         <div class="cell" data-index="8"></div>
     </div>
     <button id="reset">Reset</button>
+
+    <!-- Modal for displaying game result -->
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-modal" class="close">&times;</span>
+            <p id="message"></p>
+            <button id="modal-reset">Play Again</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
+
 </html>
