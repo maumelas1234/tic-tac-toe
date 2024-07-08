@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameActive = false; // Game starts inactive
     let boardState = Array(9).fill(null);
     let singlePlayerMode = false;
+    let waitingForMove = false; // Flag to track if waiting for move
 
     singlePlayerButton.addEventListener('click', () => startGame(true));
     twoPlayerButton.addEventListener('click', () => startGame(false));
@@ -29,13 +30,16 @@ document.addEventListener('DOMContentLoaded', () => {
         board.style.display = 'grid';
         gameActive = true; // Activate the game
         messageDisplay.textContent = '';
+        currentPlayer = 'X'; // Ensure game starts with player 'X'
+        resetBoard();
     }
 
     function handleCellClick(e) {
+        if (!gameActive || waitingForMove) return; // Check if game is active and not waiting for move
         const cell = e.target;
-        const cellIndex = cell.getAttribute('data-index');
+        const cellIndex = parseInt(cell.getAttribute('data-index'));
 
-        if (boardState[cellIndex] !== null || !gameActive) return;
+        if (boardState[cellIndex] !== null) return; // Check if cell is already occupied
 
         makeMove(cell, cellIndex, currentPlayer);
 
@@ -51,9 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; // Switch player
 
         if (singlePlayerMode && currentPlayer === 'O') {
+            waitingForMove = true; // Prevent player from clicking during computer move
             setTimeout(computerMove, 500);
         }
     }
@@ -61,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function makeMove(cell, cellIndex, player) {
         boardState[cellIndex] = player;
         cell.textContent = player;
+        waitingForMove = false; // Allow next move after current move
     }
 
     function computerMove() {
@@ -80,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        currentPlayer = 'X';
+        currentPlayer = 'X'; // Switch back to player after computer move
     }
 
     function getBestMove() {
@@ -157,17 +163,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function resetGame() {
+    function resetBoard() {
         boardState = Array(9).fill(null);
         cells.forEach(cell => {
             cell.textContent = '';
             cell.classList.remove('win');
         });
-        currentPlayer = 'X';
-        gameActive = true;
+        waitingForMove = false; // Reset move flag
+    }
+
+    function resetGame() {
+        gameActive = false;
         messageDisplay.textContent = '';
         modal.style.display = 'none';
         document.getElementById('mode-selection').style.display = 'block';
+        resetBoard();
     }
 
     function showMessage(message) {
@@ -179,4 +189,3 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.style.display = 'none';
     }
 });
-
